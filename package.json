@@ -2,11 +2,12 @@
   "name": "over-here-stranger",
   "version": "1.0.0",
   "description": "Got a lot of good things stranger!",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "lint": "eslint '*/**/*.ts'",
     "prettier:write": "prettier --write src/**/*.*",
-    "start": "babel-node src/index.ts --extensions \".ts\""
+    "start": "babel-node src/index.ts --extensions \".ts\"",
+    "build": "babel src/ -d lib --extensions '.ts'"
   },
   "author": "",
   "license": "ISC",
