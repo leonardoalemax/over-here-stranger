@@ -20,9 +20,9 @@ export interface IGame {
 
 export default class IsThereAnyDeal {
     public params: URLSearchParams;
-    constructor(){
+    constructor(key:string){
         this.params = new URLSearchParams({
-            key: "c8e51362710ae7456836a3aba5949a47d55dba52",
+            key: key,
             region:'BR2',
             country: 'BR',
         })

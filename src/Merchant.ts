@@ -9,20 +9,21 @@ import fs from "fs";
 
 export default class Merchant {
     public bot: Telegraf<TelegrafContext>;
+    public api: IsThereAnyDeal;
     public helloTemplate:string;
     public pricesTemplate:string;
     public errorTemplate:string;
 
-    constructor(token: string){
+    constructor(token: string, apiKey:string){
         this.bot = new Telegraf(token);
+        this.api = new IsThereAnyDeal(apiKey);
         this.helloTemplate = fs.readFileSync("src/messages/hello.html", 'utf-8');
         this.errorTemplate = fs.readFileSync("src/messages/error.html", 'utf-8');
         this.pricesTemplate = fs.readFileSync("src/messages/prices.html", 'utf-8');
     }
 
     public async answer(query:string) {
-        const api = new IsThereAnyDeal()
-        const game = await api.prices(query)
+        const game = await this.api.prices(query)
         if (typeof game === "undefined") return this.errorTemplate;
  
         return mustache.render(this.pricesTemplate, game);

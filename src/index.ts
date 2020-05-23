@@ -7,12 +7,12 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.listen(8033, () => {
+app.listen(process.env.PORT, () => {
     console.log('Example app listening on port 8080!');
 });
   
 require('dotenv').config();
 
-const server = new Merchant(process.env.BOT_TOKEN || "");
+const server = new Merchant(process.env.BOT_TOKEN || "", process.env.API_KEY || "", );
 server.start()
 
