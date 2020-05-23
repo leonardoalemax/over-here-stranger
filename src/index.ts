@@ -1,5 +1,4 @@
-
-
+import 'babel-polyfill';
 import express from "express";
 import Merchant from "./Merchant";
 
