@@ -1,49 +1,40 @@
-import {Telegraf} from "telegraf";
+import {Telegraf , Markup , session, Stage , BaseScene, Middleware } from "telegraf";
 import { TelegrafContext } from "telegraf/typings/context";
-import * as tt from 'telegraf/typings/extra'
-import extra from "telegraf/extra";
-
-import IsThereAnyDeal, { IPrice } from "./IsThereAnyDeal";
-import mustache from "mustache";
-import fs from "fs";
-
+import IsThereAnyDeal from "./apis/IsThereAnyDeal";
+import IEnv from "./models/Env";
+import GamesScene from "./scenes/Games";
 export default class Merchant {
     public bot: Telegraf<TelegrafContext>;
-    public api: IsThereAnyDeal;
-    public helloTemplate:string;
-    public pricesTemplate:string;
-    public errorTemplate:string;
 
-    constructor(token: string, apiKey:string){
-        this.bot = new Telegraf(token);
-        this.api = new IsThereAnyDeal(apiKey);
-        this.helloTemplate = fs.readFileSync("src/messages/hello.html", 'utf-8');
-        this.errorTemplate = fs.readFileSync("src/messages/error.html", 'utf-8');
-        this.pricesTemplate = fs.readFileSync("src/messages/prices.html", 'utf-8');
+    constructor(public env:IEnv){
+        this.bot = new Telegraf(this.env.telegramToken)
     }
 
-    public async answer(query:string) {
-        const game = await this.api.prices(query)
-        if (typeof game === "undefined") return this.errorTemplate;
- 
-        return mustache.render(this.pricesTemplate, game);
-    }
-
-    public start() { 
+    public start() {
+        this.bot.use(session())
+        const stage = new Stage([])
+        this.bot.use(stage.middleware() as Middleware<TelegrafContext>)
+        
         this.bot.start((ctx:TelegrafContext) => {
-            ctx.replyWithMarkdown(this.helloTemplate)
+            ctx.reply('Ola estranho, estou aqui pra te ajudar com o melhor preço dos jogos, escreva um jogo, que eu acho o melhor preço pra você.')
         })
+
         this.bot.help((ctx:TelegrafContext) => {
-            const markup = extra.markdown()
-            ctx.replyWithMarkdown('What are ya’ buyin!?', markup)
+            ctx.reply('Me diga um jogo, que eu acho o melhor preço.')
         })
-        this.bot.on('text', async (ctx:TelegrafContext) => {
-            if(ctx.message && ctx.message.text){
-                const answer = await this.answer(ctx.message.text);
-                ctx.replyWithHTML(answer)
-                ctx.reply('is that all stranger?')
-            }
+
+        this.bot.on('text', async (ctx:any) => {
+            const query = ctx.message?.text || "";
+            const key = `games:${query}`;
+            const games = await IsThereAnyDeal.games(query)
+
+            if(games.length <= 0) return ctx.reply('nao achei esse jogo')
+
+            const gamesScene = new GamesScene(key, games, stage)
+            stage.register(gamesScene.base)
+            ctx.scene.enter(key)
         })
+
         this.bot.launch()
     }
 }

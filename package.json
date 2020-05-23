@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@babel/cli": "^7.8.4",
+    "@babel/plugin-transform-react-jsx": "^7.9.4",
     "@babel/runtime": "^7.9.6",
     "@types/axios": "^0.14.0",
     "@types/cheerio": "^0.22.18",
@@ -36,6 +37,7 @@
     "@types/request": "^2.48.5",
     "@types/websocket": "^1.0.0",
     "axios": "^0.19.2",
+    "babel-plugin-transform-html-import-to-string": "^0.0.1",
     "babel-polyfill": "^6.26.0",
     "cheerio": "^1.0.0-rc.3",
     "dotenv": "^8.2.0",
@@ -43,6 +45,7 @@
     "mustache": "^4.0.1",
     "request": "^2.88.2",
     "telegraf": "^3.38.0",
+    "telegraf-inline-menu": "^4.0.1",
     "websocket": "^1.0.31"
   }
 }
