@@ -1,6 +1,6 @@
 import axios from "axios";
-import IGame from "../models/Games";
-import IPrice from "../models/Price";
+import IGame from "../interfaces/Games";
+import IPrice from "../interfaces/Price";
 
 export default class IsThereAnyDeal {
     static async games(query:string): Promise<Array<IGame>> {
