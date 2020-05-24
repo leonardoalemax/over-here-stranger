@@ -1,7 +1,7 @@
 import {Telegraf , Markup , session, Stage , BaseScene, Middleware } from "telegraf";
 import { TelegrafContext } from "telegraf/typings/context";
-import IsThereAnyDeal from "./apis/IsThereAnyDeal";
-import GamesScene from "./scenes/Games";
+import IsThereAnyDeal from "../apis/IsThereAnyDeal";
+import GamesScene from "../scenes/Games";
 export default class MerchantBot {
     public bot: Telegraf<TelegrafContext>;
 
@@ -24,16 +24,21 @@ export default class MerchantBot {
 
         this.bot.on('text', async (ctx:any) => {
             const query = ctx.message?.text || "";
-            const key = `games:${query}`;
+            const from = this.from(ctx)
+            const key = `${from}:query:${query}`;
             const games = await IsThereAnyDeal.games(query)
-
+            
             if(games.length <= 0) return ctx.reply('nao achei esse jogo')
 
             const gamesScene = new GamesScene(key, games, stage)
-            stage.register(gamesScene.base)
+            stage.register(gamesScene)
             ctx.scene.enter(key)
         })
 
         this.bot.launch()
+    }
+
+    public from(ctx:TelegrafContext){
+        return `@${ctx.from?.username}` || `${ctx.from?.first_name} ${ctx.from?.first_name}`
     }
 }

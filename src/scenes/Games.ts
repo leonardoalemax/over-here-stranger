@@ -1,28 +1,27 @@
 import { BaseScene, Markup } from "telegraf";
 import { SceneContextMessageUpdate, Stage } from "telegraf/typings/stage";
-import IGame from "../models/Games";
+import IGame from "../interfaces/Games";
 import IsThereAnyDeal from "../apis/IsThereAnyDeal";
 import GameScene from "./Game";
 
-export default class GamesScene {
-    public base:BaseScene<SceneContextMessageUpdate>;
+export default class GamesScene extends BaseScene<SceneContextMessageUpdate> {
 
     constructor( public title:string,
                  public games:Array<IGame>,
                  public stage:Stage<SceneContextMessageUpdate>
                 ) {
 
-        this.base = new BaseScene(this.title)    
+        super(title);    
     
        
-        this.base.enter(async (ctx:SceneContextMessageUpdate) => {
-            console.log(this.title)
+        this.enter(async (ctx:SceneContextMessageUpdate) => {
+            console.log(title)
             if(this.games.length > 1) this.choose(ctx)  
-            else await this.enterGame(ctx, this.games[0])
+            else await this.enterGame(ctx, games[0])
         })
 
         this.games.forEach((game:IGame) => {
-            this.base.hears(game.title, async (ctx) => {
+            this.hears(game.title, async (ctx) => {
                 await this.enterGame(ctx, game)
             })
         })
@@ -41,11 +40,11 @@ export default class GamesScene {
     }
 
     private async enterGame(ctx:SceneContextMessageUpdate, game:IGame) {
-        const key = `game:${game.plain}`;   
+        const key = `${this.title}:game:${game.plain}`  
         const info = await IsThereAnyDeal.info(game.plain)
-        game.image = info.image;
-        const gamesScene = new GameScene(key , game, this.stage)
-        this.stage.register(gamesScene.base)
-        ctx.scene.enter(key);
+        game.image = info.image
+        const gamesScene = new GameScene(key , game, this.stage, this.title)
+        this.stage.register(gamesScene)
+        ctx.scene.enter(key)
     }
 } 

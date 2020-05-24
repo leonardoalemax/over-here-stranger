@@ -1,19 +1,21 @@
 import { BaseScene, Markup } from "telegraf";
 import { SceneContextMessageUpdate } from "telegraf/typings/stage";
-import IGame from "../models/Games";
-import IPrice from "../models/Price";
+import IGame from "../interfaces/Games";
+import IPrice from "../interfaces/Price";
 
-export default class PricesScene {
-    public base:BaseScene<SceneContextMessageUpdate>;
+export default class PricesScene extends BaseScene<SceneContextMessageUpdate> {
+    public list:Array<string>
 
     constructor(public title:string, public game:IGame){
-        this.base = new BaseScene(this.title)
-        const list = this.game.prices.map((price:IPrice) => price.shop.name)
-        this.base.enter(async (ctx:SceneContextMessageUpdate) => {
+        super(title)
+
+        this.list = this.game.prices.map((price:IPrice) => price.shop.name)
+
+        this.enter(async (ctx:SceneContextMessageUpdate) => {
             console.log(this.title)
             
             const options =  Markup
-            .keyboard(list)
+            .keyboard(this.list)
             .oneTime()
             .resize()
             .extra()
@@ -31,7 +33,7 @@ export default class PricesScene {
         })
 
         this.game.prices.forEach((price:IPrice) => {
-            this.base.hears(price.shop.name, async (ctx) => {
+            this.hears(price.shop.name, async (ctx) => {
                 await ctx.reply(price.url)
             })
         })
