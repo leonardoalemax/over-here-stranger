@@ -1,13 +1,12 @@
 import {Telegraf , Markup , session, Stage , BaseScene, Middleware } from "telegraf";
 import { TelegrafContext } from "telegraf/typings/context";
 import IsThereAnyDeal from "./apis/IsThereAnyDeal";
-import IEnv from "./models/Env";
 import GamesScene from "./scenes/Games";
-export default class Merchant {
+export default class MerchantBot {
     public bot: Telegraf<TelegrafContext>;
 
-    constructor(public env:IEnv){
-        this.bot = new Telegraf(this.env.telegramToken)
+    constructor(){
+        this.bot = new Telegraf(process.env.BOT_TOKEN || "")
     }
 
     public start() {

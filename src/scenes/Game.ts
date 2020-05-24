@@ -2,7 +2,6 @@ import { BaseScene, Markup, Stage } from "telegraf";
 import { SceneContextMessageUpdate } from "telegraf/typings/stage";
 import IGame from "../models/Games";
 import IsThereAnyDeal from "../apis/IsThereAnyDeal";
-import Mustache from "mustache";
 import PricesScene from "./Prices";
 
 export default class GameScene {

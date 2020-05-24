@@ -1,7 +1,6 @@
 import 'babel-polyfill';
 import express from "express";
-import Merchant from "./Merchant";
-import IEnv from './models/Env';
+import MerchantBot from "./bots/Merchant";
 
 const app = express();
 app.get('/', (req, res) => {
@@ -14,11 +13,5 @@ app.listen(process.env.PORT, () => {
   
 require('dotenv').config();
 
-const env:IEnv = {
-    isThereAnyDealApiKey: process.env.API_KEY || "",
-    telegramToken: process.env.BOT_TOKEN || ""
-}
-
-const server = new Merchant(env);
+const server = new MerchantBot();
 server.start()
-
