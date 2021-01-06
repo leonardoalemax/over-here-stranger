@@ -36,7 +36,7 @@
     "@types/mustache": "^4.0.1",
     "@types/request": "^2.48.5",
     "@types/websocket": "^1.0.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "babel-plugin-transform-html-import-to-string": "^0.0.1",
     "babel-polyfill": "^6.26.0",
     "cheerio": "^1.0.0-rc.3",
